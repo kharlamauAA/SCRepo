@@ -1,0 +1,22 @@
+﻿﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Second Page</title>
+</head>
+<body>
+    <h2>Enter Your Address & Phone</h2>
+    @using (@Html.BeginForm("Step2", "Home"))
+    {
+        <div>
+            <input type="text" placeholder="Address"/><br />
+            <input type="text" placeholder="Phone"/>
+        </div>
+        <input type="submit" value="next" />
+    }
+</body>
+</html>

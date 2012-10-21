@@ -1,0 +1,25 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>FirstPage</title>
+</head>
+<body>
+    <div>
+        <h2>Enter Your Name & Surname</h2>
+        @using (@Html.BeginForm("SecondPage", "Home"))
+        {
+            <div>
+                <input type="text" placeholder="Name" name = "name"/><br />
+                <input type="text" placeholder="Surname" name = "surname"/>
+            </div>
+            <input type="submit" value="next" />
+        }
+    </div>
+</body>
+</html>
