@@ -11,7 +11,10 @@
 </head>
 <body>
     <div>
-        
+         @using (@Html.BeginForm("index", "Home"))
+        {
+            <input type="submit" value="Go to index" />
+        }
     </div>
 </body>
 </html>

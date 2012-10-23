@@ -10,11 +10,11 @@
 </head>
 <body>
     <h2>Enter Your Address & Phone</h2>
-    @using (@Html.BeginForm("Step2", "Home"))
+    @using (@Html.BeginForm("Congratulations", "Home"))
     {
         <div>
-            <input type="text" placeholder="Address"/><br />
-            <input type="text" placeholder="Phone"/>
+            <input type="text" placeholder="FavoriteWord" name="FavoriteWord"/><br />
+            <input type="text" placeholder="Phone" name = "Phone"/>
         </div>
         <input type="submit" value="next" />
     }
