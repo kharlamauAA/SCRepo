@@ -105,7 +105,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\Filters\UnitOfWork.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Filters\Filters.cs" />
     <Compile Include="DomainModel\database.cs">
@@ -125,6 +124,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\XSLTConverter.cs" />
     <Compile Include="Models\UserData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -132,12 +132,19 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="App_Data\Congrat.xml" />
+    <Content Include="App_Data\Error.xml" />
+    <Content Include="App_Data\FirstPage.xml" />
+    <Content Include="App_Data\Index.xml" />
+    <Content Include="App_Data\SecondPage.xml" />
     <Content Include="App_Data\Users.mdf" />
     <Content Include="App_Data\Users_log.ldf">
       <DependentUpon>Users.mdf</DependentUpon>
     </Content>
     <Content Include="Global.asax" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -145,33 +152,19 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Views\Web.config" />
+    <Content Include="XSLTConverters\Pages.xsl" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\Helpers\" />
+    <Folder Include="Views\Home\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Home\SecondPage.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\_ViewBegin.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Home\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Shared\_Layout.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Home\FirstPage.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Home\Error.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Home\Congratulations.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />

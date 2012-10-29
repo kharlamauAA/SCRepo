@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<page>
+  <subtitle>Enter Your Secret Word &amp; Phone</subtitle>
+  <form action="/Home/Congratulations">
+    <title>Second Page</title>
+    <input>FavoriteWord</input>
+    <input>Phone</input>
+    <submit>Submit</submit>
+  </form>
+</page>

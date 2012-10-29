@@ -16,6 +16,8 @@ using MVCApp.Filters;
 using Model;
 using MVCApp.DomainModel.Providers;
 using MVCApp.DomainModel;
+using MVCApp.Helpers;
+using MVCApp.Helpers;
 
 namespace MVCApp.Controllers
 {
@@ -31,23 +33,27 @@ namespace MVCApp.Controllers
             UserProvider provider = new UserProvider(new databaseDataContext(ConnectionProvider.ConnectionString));
             userData = new UserData();
             ftChain.addFilter(new UserCheckerFilter());
-            return View();
+            string html = XSLTConverter.Transform(Server.MapPath(Url.Content("~/App_Data/Index.xml")), Server.MapPath(Url.Content("~/XSLTConverters/Pages.xsl")));
+            return Content(html);
         }
 
 
         public ActionResult FirstPage()
         {
-            return View();
+            string html = XSLTConverter.Transform(Server.MapPath(Url.Content("~/App_Data/FirstPage.xml")), Server.MapPath(Url.Content("~/XSLTConverters/Pages.xsl")));
+            return Content(html);
         }
 
         public ActionResult SecondPage()
         {
-            return View();
+            string html = XSLTConverter.Transform(Server.MapPath(Url.Content("~/App_Data/SecondPage.xml")), Server.MapPath(Url.Content("~/XSLTConverters/Pages.xsl")));
+            return Content(html);
         }
 
         public ActionResult Congratulations(string result)
         {
-            return View();
+            string html = XSLTConverter.Transform(Server.MapPath(Url.Content("~/App_Data/Congrat.xml")), Server.MapPath(Url.Content("~/XSLTConverters/Pages.xsl")));
+            return Content(html);
         }
 
         [HttpPost]
@@ -69,6 +75,7 @@ namespace MVCApp.Controllers
                 return RedirectToAction("Index");
             userData.SecWord = FavoriteWord;
             userData.UserPhone = Phone;
+            userData.UserID = -1;
             int res = -1;
             ftChain.StartFiltering(userData, ref res);
             string result = "";
@@ -76,13 +83,14 @@ namespace MVCApp.Controllers
                 result = "Everything is OK";
             else
                 result = "Such User Exists";
-            return RedirectToAction("Congratulations", result);
+            return RedirectToAction("Congratulations");
         }
 
         public ActionResult Error()
         {
             userData = null;
-            return View();
+            string html = XSLTConverter.Transform(Server.MapPath(Url.Content("~/App_Data/Error.xml")), Server.MapPath(Url.Content("~/XSLTConverters/Pages.xsl")));
+            return Content(html);
         }
 
 

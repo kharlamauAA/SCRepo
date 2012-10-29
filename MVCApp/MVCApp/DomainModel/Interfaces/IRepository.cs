@@ -8,11 +8,12 @@ namespace MVCApp.DomainModel.Interfaces
 {
     public interface IUserRepository : IDisposable
     {
-        IEnumerable<UserData> GetUsers();
         UserData GetUserById(int userId);
-        void CreateUser(UserData user);
-        void DeleteUser(int userId);
-        void UpdateUser(UserData user);
+        void Insert(UserData user);
+        void Update(UserData user);
+        void Delete(int userID);
         void Save();
+
+        IEnumerable<UserData> GetUsers();
     }
 }

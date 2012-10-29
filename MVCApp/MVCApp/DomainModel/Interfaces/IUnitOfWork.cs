@@ -8,9 +8,8 @@ namespace MVCApp.DomainModel.Interfaces
 {
     interface IUnitOfWork
     {
-        void RegisterNew(UserData o);
-        void RegisterDeleted(UserData o);
-        void RegisterChanged(UserData o);
+        void Insert(UserData o);
+        void Delete(int userId);
         void Commit();
         void Rollback();
     }

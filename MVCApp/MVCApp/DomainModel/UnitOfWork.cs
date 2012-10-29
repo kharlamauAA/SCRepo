@@ -9,81 +9,82 @@ namespace MVCApp.DomainModel
 {
     public class UnitOfWork : IUnitOfWork, IUserRepository
     {
-        private List<UserData> newObjects;
-        private List<UserData> dirtyObjects;
-        private List<int> removedObjects;
+        private Dictionary< UserData, int > userObjects;
 
         private IUserRepository repository;
-        private Dictionary<int, UserData> originals;
+
+        private bool getFromRepFlag = false;
+
+        private void checkUser(UserData userNew)
+        {
+            int i = 0;
+            foreach (UserData user in userObjects.Keys)
+            {                
+                if (user.UserID == userNew.UserID)
+                {
+                    userObjects.Remove(user);
+                    i = 1;
+                    break;
+                }
+            }
+            userObjects.Add(userNew, i);
+        }
+
+        private void deleteUser(int userId)
+        {
+            foreach (var user in userObjects)
+            {
+                if (((UserData)user.Key).UserID == userId)
+                {
+                    userObjects.Add(user.Key, 2);
+                    break;
+                }
+            }
+        }
 
 
         public UnitOfWork(IUserRepository repository)
         {
-            newObjects = new List<UserData>();
-            dirtyObjects = new List<UserData>();
-            removedObjects = new List<int>();
-            originals = new Dictionary<int, UserData>();
+            userObjects = new Dictionary<UserData, int>();
             this.repository = repository;
+            GetUsersFromRep();
         }
 
-        public void RegisterNew(UserData user)
-        {
-            if (user != null && !newObjects.Contains(user))
-            {
-                newObjects.Add(user);
-            }
-        }
-
-        public void RegisterDeleted(UserData user)
-        {
-            if (user != null && !removedObjects.Contains(user.UserID))
-            {
-                if (newObjects.Contains(user))
-                {
-                    newObjects.Remove(user);
-                }
-                else if (dirtyObjects.Contains(user))
-                {
-                    dirtyObjects.Remove(user);
-                    removedObjects.Add(user.UserID);
-                }
-                else
-                {
-                    removedObjects.Add(user.UserID);
-                }
-            }
-        }
-
-        public void RegisterChanged(UserData user)
+        public void Insert(UserData user)
         {
             if (user != null)
-            {
-                UserData newUser = newObjects.Single(x => x.UserID == user.UserID);
-                if (newUser != null)
-                {
-                    newObjects.Remove(newUser);
-                    newObjects.Add(user);
-                }
-                else
-                {
-                    dirtyObjects.Add(user);
-                }
-            }
+                checkUser(user);
+        }
+
+        public void Update(UserData user)
+        {
+            if (user != null)
+                checkUser(user);
+        }
+
+        public void Delete(int userId)
+        {
+            deleteUser(userId);
         }
 
         public void Commit()
         {
-            foreach (UserData user in newObjects)
+            foreach (var user in userObjects)
             {
-                repository.CreateUser(user);
-            }
-            foreach (int userId in removedObjects)
-            {
-                repository.DeleteUser(userId);
-            }
-            foreach (UserData user in dirtyObjects)
-            {
-                repository.UpdateUser(user);
+                switch(user.Value)
+                {
+                    case 0:
+                        repository.Insert((UserData)user.Key);
+                        break;
+                    case 1:
+                        repository.Update((UserData)user.Key);
+                        break;
+                    case 2:
+                        repository.Delete(((UserData)user.Key).UserID);
+                        break;
+                    default: break;
+                }
+
             }
             repository.Save();
             Rollback();
@@ -91,47 +92,35 @@ namespace MVCApp.DomainModel
 
         public void Rollback()
         {
-            newObjects.Clear();
-            dirtyObjects.Clear();
-            removedObjects.Clear();
+            userObjects.Clear();
         }
 
-        public IEnumerable<UserData> GetUsers()
+        private void GetUsersFromRep()
         {
-            IEnumerable<UserData> users = repository.GetUsers();
-            foreach (UserData user in users)
+            if (!getFromRepFlag)
             {
-                if (!originals.ContainsKey(user.UserID))
+                getFromRepFlag = true;
+                IEnumerable<UserData> users = repository.GetUsers();
+                foreach (UserData user in users)
                 {
-                    originals.Add(user.UserID, user);
+                    userObjects.Add(user, -1);
                 }
             }
-            return users;
+        }
+
+        public int getNumberOfUsers()
+        {
+            return userObjects.Count;
         }
 
         public UserData GetUserById(int userId)
         {
-            UserData user = repository.GetUserById(userId);
-            if (!originals.ContainsKey(user.UserID))
+            foreach (var user in userObjects)
             {
-                originals.Add(user.UserID, user);
+                if (((UserData)user.Key).UserID == userId)
+                    return (UserData)user.Key;
             }
-            return user;
-        }
-
-        public void CreateUser(UserData user)
-        {
-            newObjects.Add(user);
-        }
-
-        public void DeleteUser(int userId)
-        {
-            removedObjects.Add(userId);
-        }
-
-        public void UpdateUser(UserData user)
-        {
-            dirtyObjects.Add(user);
+            return null;
         }
 
         public void Save()
@@ -142,6 +131,13 @@ namespace MVCApp.DomainModel
         public void Dispose()
         {
 
+        }
+
+
+        public IEnumerable<UserData> GetUsers()
+        {
+            GetUsersFromRep();
+            return userObjects.Keys;
         }
     }
 }

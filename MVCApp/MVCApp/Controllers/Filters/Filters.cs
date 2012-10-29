@@ -19,6 +19,19 @@ namespace MVCApp.Filters
 
     public class UserCheckerFilter : Filter
     {
+        private int getUserID(Object data)
+        {
+            int id = 0;
+            using (UserProvider provider = new UserProvider(new databaseDataContext(ConnectionProvider.ConnectionString)))
+            {
+                UnitOfWork uof = new UnitOfWork(provider);
+                //var users = provider.GetUsers(); 
+                var users = uof.getNumberOfUsers() + 1;
+                id = uof.getNumberOfUsers() + 1;
+            }
+            return id;
+        }
+
         public bool execute(Object data)
         {
             UserData user = (UserData)data;
@@ -26,12 +39,10 @@ namespace MVCApp.Filters
             using (UserProvider provider = new UserProvider(new databaseDataContext(ConnectionProvider.ConnectionString)))
             {
                 UnitOfWork uof = new UnitOfWork(provider);
-                //var users = provider.GetUsers(); 
-                var users = uof.GetUsers();
-                if (users.Count() == 0)
-                {
-                    uof.CreateUser(user);
-                }
+                if (user.UserID == -1)
+                    user.UserID = getUserID(user);
+                uof.Insert(user);
+                uof.Commit();
             }
 
             return true;

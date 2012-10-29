@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<page>
+  <subtitle>Enter Your Name &amp; Surname</subtitle>
+  <form action="/Home/Congratulations">
+    <submit>To The Beginning</submit>
+  </form>
+</page>

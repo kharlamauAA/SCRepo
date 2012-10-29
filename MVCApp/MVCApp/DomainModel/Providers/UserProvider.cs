@@ -31,27 +31,9 @@ namespace MVCApp.DomainModel.Providers
             return context.Users.Count();
         }
 
-        public void CreateUser(UserData user)
-        {
-            User data = new User()
-            {
-                UserName = user.UserName,
-                UserSurname = user.UserSurname,
-                SecWord = user.SecWord,
-                UserPhone = user.UserPhone
-            };
-            context.Users.InsertOnSubmit(data);
-        }
-
         public List<UserData> GetRange(int skip, int items)
         {
             return context.Users.Select(row => row.ConvertToUser()).Skip(skip).Take(items).ToList();
-        }
-
-        public void DeleteUser(int userId)
-        {
-            var userToDelete = context.Users.First(x => x.UserID == userId);
-            context.Users.DeleteOnSubmit(userToDelete);
         }
 
         public IEnumerable<UserData> GetUsers()
@@ -62,15 +44,6 @@ namespace MVCApp.DomainModel.Providers
         public UserData GetUserById(int userId)
         {
             return context.Users.First(x => x.UserID == userId).ConvertToUser();
-        }
-
-        public void UpdateUser(UserData user)
-        {
-            User data = context.Users.First(x => x.UserID == user.UserID);
-            data.SecWord = user.SecWord;
-            data.UserPhone = user.UserPhone;
-            data.UserName = user.UserName;
-            data.UserSurname = user.UserSurname;
         }
 
         public void Save()
@@ -96,6 +69,34 @@ namespace MVCApp.DomainModel.Providers
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        public void Insert(UserData user)
+        {
+            User data = new User()
+            {
+                UserID = user.UserID,
+                UserName = user.UserName,
+                UserSurname = user.UserSurname,
+                SecWord = user.SecWord,
+                UserPhone = user.UserPhone
+            };
+            context.Users.InsertOnSubmit(data);
+        }
+
+        public void Update(UserData user)
+        {
+            User data = context.Users.First(x => x.UserID == user.UserID);
+            data.SecWord = user.SecWord;
+            data.UserPhone = user.UserPhone;
+            data.UserName = user.UserName;
+            data.UserSurname = user.UserSurname;
+        }
+
+        public void Delete(int userId)
+        {
+            var userToDelete = context.Users.First(x => x.UserID == userId);
+            context.Users.DeleteOnSubmit(userToDelete);
         }
     }
 }
