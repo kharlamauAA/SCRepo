@@ -18,6 +18,7 @@ using MVCApp.DomainModel.Providers;
 using MVCApp.DomainModel;
 using MVCApp.Helpers;
 using MVCApp.Helpers;
+using MVCApp.Controllers.Commands;
 
 namespace MVCApp.Controllers
 {
@@ -26,15 +27,18 @@ namespace MVCApp.Controllers
         private static int markOfSynchronization = 0;
         private static FilterChain ftChain = FilterManager.instance().CreateChain();
         private static UserData userData = null;
+        private static ICommand converter = null;
 
         public ActionResult Index(int? page, string selectedUsers, string diselectedUsers)
         {
+            if (converter == null)
+                converter = new GenerateViewCommand(Server.MapPath(Url.Content("~/XSLTConverters/Pages.xsl")));
+
             markOfSynchronization = 0;
             UserProvider provider = new UserProvider(new databaseDataContext(ConnectionProvider.ConnectionString));
             userData = new UserData();
             ftChain.addFilter(new UserCheckerFilter());
-            string html = XSLTConverter.Transform(Server.MapPath(Url.Content("~/App_Data/Index.xml")), Server.MapPath(Url.Content("~/XSLTConverters/Pages.xsl")));
-            return Content(html);
+            return Content((string)converter.ExecuteCommand(Server.MapPath(Url.Content("~/App_Data/Index.xml"))));
         }
 
 
@@ -46,14 +50,12 @@ namespace MVCApp.Controllers
 
         public ActionResult SecondPage()
         {
-            string html = XSLTConverter.Transform(Server.MapPath(Url.Content("~/App_Data/SecondPage.xml")), Server.MapPath(Url.Content("~/XSLTConverters/Pages.xsl")));
-            return Content(html);
+            return Content((string)converter.ExecuteCommand(Server.MapPath(Url.Content("~/App_Data/SecondPage.xml"))));
         }
 
         public ActionResult Congratulations(string result)
         {
-            string html = XSLTConverter.Transform(Server.MapPath(Url.Content("~/App_Data/Congrat.xml")), Server.MapPath(Url.Content("~/XSLTConverters/Pages.xsl")));
-            return Content(html);
+            return Content((string)converter.ExecuteCommand(Server.MapPath(Url.Content("~/App_Data/Congrat.xml"))));
         }
 
         [HttpPost]
@@ -89,8 +91,7 @@ namespace MVCApp.Controllers
         public ActionResult Error()
         {
             userData = null;
-            string html = XSLTConverter.Transform(Server.MapPath(Url.Content("~/App_Data/Error.xml")), Server.MapPath(Url.Content("~/XSLTConverters/Pages.xsl")));
-            return Content(html);
+            return Content((string)converter.ExecuteCommand(Server.MapPath(Url.Content("~/App_Data/Error.xml"))));
         }
 
 
